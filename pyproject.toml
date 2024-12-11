@@ -1,0 +1,15 @@
+[project]
+name = "progetto"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "altair>=5.5.0",
+    "pandas>=2.2.3",
+    "plotly-express>=0.4.1",
+    "polars>=1.17.0",
+    "pycountry>=24.6.1",
+    "streamlit>=1.41.0",
+    "toml>=0.10.2",
+]
