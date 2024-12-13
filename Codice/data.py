@@ -4,7 +4,7 @@ def life(url):
     raw = pl.read_csv(url,
                         separator="\t",
                         null_values=["", ":", ": "])
-
+    
     df = (
         raw
         #
@@ -40,19 +40,17 @@ def life(url):
     
     return df
 
-
-
-
 def work(url): #In-Work Poverty Rate
     raw = pl.read_csv(url,
                         separator="\t",
                         null_values=["", ":", ": "])
+
     df = (raw
         .select(
             pl.col("freq,wstatus,sex,age,unit,geo\\TIME_PERIOD")
                 .str.split(",")
                 .list.to_struct(fields=["freq", "wstatus", "sex", "age", "unit", "geo"])
-                .alias("combined"), # quello che si vuolle tanto viene eliminata
+                .alias("combined"),
             pl.col("*").exclude("freq,unit,sex,age,geo\\TIME_PERIOD")
         )
         .unnest("combined")
@@ -62,8 +60,9 @@ def work(url): #In-Work Poverty Rate
             value_name="poverty_rate"
         )
         .with_columns(
-            pl.col("year").str.extract(r"(\d{4})").cast(pl.Int64), # estrae solo valori con 4 numeri
+            pl.col("year").str.extract(r"(\d{4})").cast(pl.Int64), # estrae solo valori con 4 cifre consecutive
             pl.col("poverty_rate").str.extract(r"(\d+(\.\d+)?)").cast(pl.Float64), # estrae numeri interi o con il punto
+            # estrae più cifre prima del . e poi più cifre dopo se ci sono(?)
             pl.col("geo").str.replace(r"[\[\]]", "").alias("country")
         )
         .drop_nulls("year")

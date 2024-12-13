@@ -7,21 +7,21 @@ import pandas as pd
 from data import life
 from data import work
 
-# dataset
+# dataset totale
 df_tot = life(url = "Data\estat_demo_mlexpec.tsv.gz")
-
+# dataset con sola fascia <=1 anno
 df = df_tot.filter(pl.col("age") == 1)
 
 countries = df.select("country").unique().sort("country") # paesi
-years = df.select("year").unique().sort("year") #anni
+years = df.select("year").unique().sort("year") # anni
 sex = df.select("sex").unique().sort("sex") # sesso
 
 st.write("# ANALISI ASPETTATIVA DI VITA")
-st.write("##### OBIETTIVO: studiare un indice della salute generale per i diversi paesi europei")
+st.write("###### OBIETTIVO: studiare un indice della salute generale per i diversi paesi europei")
 
 ### ANALISI ESPLORATIVA 
 
-selected_countries = st.multiselect("Scegli uno o più paesi", countries, default= ["IT", "FR", "DE"])
+selected_countries = st.multiselect("Scegli uno o più paesi", countries, default = ["IT", "BE", "CH"]) #ita, germ, svizz
 filtered_df = (
     df
     .filter(pl.col("country").is_in(selected_countries))
@@ -32,7 +32,7 @@ filtered_df = (
     )
 )           
 
-col1, col2 = st.columns([1, 1])  # divido in due colonne
+col1, col2 = st.columns([1, 1])  # divido la pagina in due colonne
 
 with col1:
     chart = (
@@ -40,7 +40,7 @@ with col1:
         .mark_line()
         .encode(
             alt.X("year:O", title = "Anno").scale(zero=False),
-            alt.Y("life_exp:Q", title = "Aspettativa di vita media"),
+            alt.Y("life_exp:Q", title = "Aspettativa di vita media", scale = alt.Scale(domain = [55, 90])),
             alt.Facet("sex:N", columns = 2),  # mette i grafici uno di fianco all'altro invece che uno sotto l'altro
             color = alt.Color("country:N"),
             tooltip = ["country", "year", "life_exp"],
@@ -52,7 +52,7 @@ with col1:
         )
     )
 
-    st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, use_container_width = True)
 
 st.markdown(f'''
             Questo grafico mostra l'**evoluzione dell'aspettativa di vita media nel tempo** per i paesi selezionati,
@@ -61,7 +61,7 @@ st.markdown(f'''
 
 
 ### CARTINA GEOGRAFICA
-df_eu = df.filter(~pl.col("country").is_in(["DE_TOT", "EA19", "EA20", "EEA30_2007", "EEA31",
+df_eu = df.filter(~pl.col("country").is_in(["DE_TOT", "EA19", "EA20", "EEA30_2007", "EEA31", # ~ negazione da T a F e vicev. 
                                       "EFTA", "EU27_2007", "EU27_2020", "EU28", "FX", "SM"]))
  
 # conversione in pandas
@@ -74,7 +74,7 @@ df_pandas["country_iso3"] = df_pandas["country"].map(iso2_to_iso3)
 df_iso3 = pl.from_pandas(df_pandas)
 
 
-year_select1 = st.select_slider("Scegli un anno", years, key="slider_1", value = 2003)
+year_select1 = st.select_slider("Scegli un anno", years, key = "slider_1", value = 2003)
 
 df_fig = (
     df_iso3
@@ -88,8 +88,8 @@ df_fig = (
 fig = px.choropleth(
     df_fig,
     locationmode = "ISO-3",
-    locations = "country_iso3",          # colonna con i codici ISO dei paesi
-    color = "media",                     # colonna con la fascia di aspettativa di vita
+    locations = "country_iso3",
+    color = "media",
     hover_name = "country_iso3",
     color_continuous_scale = px.colors.sequential.Viridis_r,
     scope = "europe",
@@ -112,7 +112,7 @@ st.markdown(f'''
 year_select2 = st.select_slider("Seleziona un anno per il confronto tra i sessi", years, key = "slider_2", value = 2003)
 
 sex_data = (
-    df
+    df_eu
     .filter(pl.col("year") == year_select2)
     .filter(pl.col("sex").is_in(["M", "F"]))
     .group_by("country", "sex")
@@ -152,7 +152,7 @@ st.markdown('''
 
 ### CARTINA GEOGRAFICA GAP SESSI
 
-year_select3 = st.select_slider("Scegli un anno", years, key="slider_3", value = 2003)
+year_select3 = st.select_slider("Scegli un anno", years, key = "slider_3", value = 2003)
 
 df1 = (
     df_iso3
@@ -225,7 +225,7 @@ global_trend_chart = (
     .mark_line(point = True)
     .encode(
         alt.X("year:O", title = "Anno"),
-        alt.Y("global_average:Q", title = "Aspettativa di vita media globale"),
+        alt.Y("global_average:Q", title = "Aspettativa di vita media globale", scale = alt.Scale(domain = [68, 82])),
         tooltip=["year", "global_average"]
     )
     .properties(
@@ -245,6 +245,7 @@ st.markdown('''
             Il grafico offre una visione chiara e immediata di come l'aspettativa di vita sia cambiata nel tempo.
             E' utile per avere un'idea generale di come fattori globali, quali **miglioramenti della medicina**,
             **guerre** o **pandemie** abbiamo influenzato sulla vita media della popolazione nel corso del tempo.
+            Per esempio si riesce a vedere l'effetto nel 2020 del covid.
 ''')
 
 # DEVIAZIONE DALLA MEDIA GLOBALE
@@ -252,7 +253,7 @@ year_select4 = st.select_slider("Seleziona un anno per individuare i paesi che p
                                 years, key = "slider_4", value = 2003)
 
 data = (
-    df
+    df_eu
     .filter(pl.col("year") == year_select4)
     .group_by("country")
     .agg(
@@ -323,10 +324,10 @@ data = (
 
 chart = (
     alt.Chart(data)
-    .mark_rect(stroke=None)
+    .mark_rect(stroke = None, opacity = 1)
     .encode(
-        alt.X("year:O"),
-        alt.Y("age:O", sort="descending"),
+        alt.X("year:O", title = "Anno"),
+        alt.Y("age:O", sort="descending", title = "Età"),
         alt.Color("Percentile:Q", scale=alt.Scale(scheme="inferno")),
         alt.Facet("sex:N")
     )
@@ -347,8 +348,7 @@ st.markdown(f"""
             :red[NOTA:] in questa analisi sono state usate tutte le età disponibili nel dataset
             """)
 
-
-
+### INNER JOIN
 
 df_work = work(url = "Data\estat_ilc_iw01.tsv.gz")
 
@@ -377,8 +377,11 @@ year_select5 = st.select_slider("Scegli un anno", years_work, key = "slider_5", 
 
 df_join = df_join.filter(pl.col("year") == year_select5)
 
+correlation = df_join.select([
+    pl.corr("life_exp_mean", "poverty_rate_mean", method="pearson").round(2)
+])
+correlation = correlation.to_series().item(0)
 
-# Crea il grafico scatterplot per esplorare la correlazione
 scatter_plot = (
     alt.Chart(df_join)
     .mark_circle(size = 60)
@@ -390,11 +393,11 @@ scatter_plot = (
     .properties(
         width = 600,
         height = 400,
-        title = "Correlazione tra Aspettativa di Vita e Tasso di Povertà"
+        title = f"Correlazione tra Aspettativa di Vita e Tasso di Povertà - Correlazione: {correlation} - Anno {year_select5}"
     )
 )
 
-st.altair_chart(scatter_plot, use_container_width=True)
+st.altair_chart(scatter_plot, use_container_width = True)
 
 st.markdown(f"""
             Questo scatterplot mostra la **relazione** tra l'aspettativa di vita media e il tasso lavoratori
@@ -405,11 +408,34 @@ st.markdown(f"""
 
             Tuttavia, non sembra esserci una correlazione evidente o forte tra le due variabili. Per arrivare a 
             conclusioni più dettagliate, sarebbero necessarie analisi aggiuntive, ma ciò non è l'obiettivo del progetto.
+            
             Una mia, possibile, interpretazione di questo risultato è che l'aspettativa di vita media, come evidenziato 
             dalle analisi precedenti, è aumentata nel corso degli anni grazie a miglioramenti nelle condizioni igieniche 
-            e sanitarie. Ciò ha consentito anche alle persone considerate povere di potersi permettere medicine e cure 
-            mediche, con un impatto più significativo sulla qualità della vita rispetto alla salute generale.
+            e sanitarie. Ciò ha consentito anche alle persone classificate come a **rischio di povertà** di potersi permettere 
+            medicine e cure mediche, con un impatto più significativo sulla qualità della vita rispetto alla salute generale.
 """)
+
+
+if st.button("Leggi le conclusioni del progetto"):
+    st.markdown(f"""
+                Le principali conclusioni, che sono messe in evidenza dall'analisi dei dati
+                sull'aspettativa di vita e il tasso di povertà dei lavoratori nei paesi europei, sono:
+
+                - L'aspettativa di vita sembra sia cresciuta costantemente dal 1960, grazie a migliori condizioni
+                  sanitarie e socioeconomiche. Si riscontrano però anche periodi con cali temporanei, che
+                  si possono attribuire a fattori quali guerre o pandemie (es. covid 2020/2021).
+                - Le donne vivono più a lungo degli uomini in tutti i paesi analizzati,
+                  ma il divario può variare significativamente.
+                - Non è emersa una correlazione evidente tra il tasso di povertà dei lavoratori e l'aspettativa di vita,
+                  questo può indicare che ci sono altri fattori non osservati che giocano un ruolo importante,
+                  come l'accesso ai servizi sanitari.
+
+                Questi risultati offrono una panoramica utile per comprendere l'evoluzione della salute pubblica in Europa,
+                fornendo spunti per ulteriori analisi.
+""")
+
+
+
 
 st.markdown(f"""
     Dataset: 'Life expectancy by age and sex'  
