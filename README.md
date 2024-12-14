@@ -2,7 +2,7 @@
 uv run streamlit run .\Codice\app.py
 
 # OBIETTIVO
-Analizzare l'aspettativa di vita per studiare un indice della salute generale per i diversi paesi europei e fare un confronto tra sesso, anno e paese, con l'aggiunta di un dataset sulla tasso di povertà dei lavoratori dove si studia se esiste una correlazione con l'aspettativa di vita.
+Analizzare l'aspettativa di vita per studiare un indice della salute generale per i diversi paesi europei e fare un confronto tra sesso, anno e paese. Alla fine si studia se esiste una correlazione tra l'aspettativa di vita e il tasso di povertà dei lavoratori.
 
 # fonti
 Dataset: 'Life expectancy by age and sex'  
