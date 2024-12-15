@@ -8,7 +8,7 @@ from data import life
 from data import work
 
 # dataset totale
-df_tot = life(url = "Data\estat_demo_mlexpec.tsv.gz")
+df_tot = life(url = "estat_demo_mlexpec.tsv.gz")
 # dataset con sola fascia <=1 anno
 df = df_tot.filter(pl.col("age") == 1)
 # dataset filtrato con iso-2 validi
@@ -395,7 +395,7 @@ st.markdown(f"""
 
 ### INNER JOIN
 
-df_work = work(url = "Data\estat_ilc_iw01.tsv.gz")
+df_work = work(url = "estat_ilc_iw01.tsv.gz")
 
 df_mean = (df
            .group_by("country", "year")
