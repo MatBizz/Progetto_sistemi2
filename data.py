@@ -1,6 +1,6 @@
 import polars as pl
 
-def life(url):
+def life(url): # Life expectancy by age and sex
     raw = pl.read_csv(url,
                         separator="\t",
                         null_values=["", ":", ": "])

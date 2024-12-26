@@ -11,3 +11,6 @@ wheels/
 
 # file di python per prove varie
 prove.py
+
+# dataset in forse
+estat_sdg_13_10.tsv.gz
