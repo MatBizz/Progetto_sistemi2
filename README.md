@@ -6,6 +6,7 @@ Analizzare l'aspettativa di vita per studiare un indice della salute generale pe
 
 # FONTI
 **Dataset**: 'Life expectancy by age and sex'
+
 **Descrizione**: Questo dataset proviene da eurostat.
              Misura l'aspettativa di vita, suddivisa per anno, paese (esclusivamente del continente europeo), sesso ed età.
              Il periodo coperto è dal 1960 al 2023.
@@ -13,9 +14,11 @@ Analizzare l'aspettativa di vita per studiare un indice della salute generale pe
 **Fonte**: https://ec.europa.eu/eurostat/databrowser/view/demo_mlexpec/default/table?lang=en&category=demo.demo_mor
             
 **Dataset**: 'In-work at-risk-of-poverty rate by age and sex'
+
 **Descrizione**: Questo dataset proviene da eurostat.
              Misura il tasso dei lavoratori a rischio di povertà, suddivisa per anno, paese (esclusivamente del continente europeo), sesso ed età (fascie di età).
              Il periodo coperto è dal 2003 al 2023.
+
 **Fonte**: https://ec.europa.eu/eurostat/databrowser/view/ilc_iw01/default/table?lang=en&category=livcon.ilc.ilc_ip.ilc_iw
 
 # OSSERVAZIONI

@@ -30,14 +30,14 @@ st.markdown(f"""**OBIETTIVO**: Analizzare l'aspettativa di vita per studiare un 
 st.markdown(f"""
             #### Aspettativa di Vita medio per Paese ed Anno
 """)
-year_select0 = st.select_slider("Scegli un anno", years, key = "slider_0", value = 2003)
+year_select0 = st.select_slider("Scegli un anno", years, key = "slider_0", value = 2003)# scelta anno da utente
 
 bar_chart_data = (
     df_eu
-    .filter(pl.col("year") == year_select0)
+    .filter(pl.col("year") == year_select0)# filtro per anno selezionato
     .group_by("country")
     .agg(
-        pl.col("life_exp").mean().round(1).alias("average")
+        pl.col("life_exp").mean().round(1).alias("average")# media asp. di vita per paese
     )
     .with_columns(
     pl.col("country")
@@ -69,15 +69,15 @@ st.markdown(f'''
 st.markdown(f"""
             #### Confronto dell'Aspettativa di Vita per Sesso ed Anno
 """)
-year_select1 = st.select_slider("Scegli un anno", years, key = "slider_1", value = 2003)
+year_select1 = st.select_slider("Scegli un anno", years, key = "slider_1", value = 2003)# scelta anno da utente
 
 sex_data = (
     df_eu
-    .filter(pl.col("year") == year_select1)
-    .filter(pl.col("sex").is_in(["M", "F"]))
+    .filter(pl.col("year") == year_select1)# filtro per anno scelto
+    .filter(pl.col("sex").is_in(["M", "F"]))# teniamo solo sesso maschio e femmina
     .group_by("country", "sex")
     .agg(
-        pl.col("life_exp").mean().alias("average_life_exp")
+        pl.col("life_exp").mean().alias("average_life_exp")# media asp. di vita per sesso e paese
     )
 )
 
@@ -121,14 +121,15 @@ df_iso3 = pl.from_pandas(df_pandas)
 st.markdown(f"""
             #### Aspettativa di Vita media per Paese ed Anno
 """)
-year_select2 = st.select_slider("Scegli un anno", years, key = "slider_2", value = 2003)
+year_select2 = st.select_slider("Scegli un anno", years, key = "slider_2", value = 2003)# scelta anno da utente
 
 df_fig = (
     df_iso3
-    .filter(pl.col("year") == year_select2)
+    .filter(pl.col("year") == year_select2) # filtro per anno selezionato
         .group_by("country_iso3")
         .agg(
-            pl.col("life_exp").mean().round(2).alias("asp. di vita media")
+            pl.col("life_exp").mean().round(2).alias("asp. di vita media")# media asp. di vita per paese
+                                                                          #(codice isp3 invece di iso2 in questo caso)
         )
 )
 
@@ -160,15 +161,15 @@ st.markdown(f'''
 st.markdown(f"""
             #### Gap dell'Aspettativa di Vita media per Paese ed anno
 """)
-year_select3 = st.select_slider("Scegli un anno", years, key = "slider_3", value = 2003)
+year_select3 = st.select_slider("Scegli un anno", years, key = "slider_3", value = 2003)# scelta anno da utente
 
 df1 = (
     df_iso3
-    .filter(pl.col("sex").is_in(["M", "F"]))
-    .filter(pl.col("year") == year_select3)
+    .filter(pl.col("sex").is_in(["M", "F"]))# teniamo solo sesso maschio e femmina (no T - totale)
+    .filter(pl.col("year") == year_select3)# filtro per anno selezionato
     .group_by(["country_iso3", "sex"])
     .agg(
-        pl.col("life_exp").mean().alias("average_life_exp")
+        pl.col("life_exp").mean().alias("average_life_exp")# media asp. di vita per paese e sesso
     )
 )
 
@@ -220,10 +221,10 @@ st.markdown(f"""
 """)
 global_trend_data = (
     df
-    .filter(pl.col("sex") == "T")  
+    .filter(pl.col("sex") == "T")  # consideriamo tutti i sessi
     .group_by("year")
     .agg(
-        pl.col("life_exp").mean().round(2).alias("global_average")
+        pl.col("life_exp").mean().round(2).alias("global_average")# media asp. di vita per anno
     )
 )
 
@@ -262,18 +263,19 @@ st.markdown('''
 st.markdown(f"""
             #### Tred dell'Aspettativa di Vita per Paese e Sesso
 """)
+# multi select per paesi 
 selected_countries = st.multiselect("Scegli uno o più paesi", countries, default = ["IT", "BE", "CH"]) #ita, germ, svizz
 filtered_df = (
     df
-    .filter(pl.col("country").is_in(selected_countries))
-    .filter(pl.col("sex") != "T")
+    .filter(pl.col("country").is_in(selected_countries))# filtro oss per paesi scelti
+    .filter(pl.col("sex") != "T") # non consideriamo il totale dato che vogliamo distinguere maschi da femmine
     .group_by("year", "country", "sex")
     .agg(
-        pl.col("life_exp").mean()
+        pl.col("life_exp").mean()# media asp. di vita per anno, paese e sesso
     )
 )           
 
-col1, col2 = st.columns([1, 1])  # divido la pagina in due colonne
+col1, col2 = st.columns([1, 1])  # divido la pagina in due colonne, per avere i 2 grafici affiancati bene
 
 with col1:
     chart = (
@@ -309,14 +311,14 @@ st.markdown(f'''
 st.markdown(f"""
             #### Anomalie principali rispetto alla media globale per Anno
 """)
-year_select4 = st.select_slider("Scegli un anno", years, key = "slider_4", value = 2003)
+year_select4 = st.select_slider("Scegli un anno", years, key = "slider_4", value = 2003)# scelta anno da utenmte
 
 data = (
     df_eu
-    .filter(pl.col("year") == year_select4)
+    .filter(pl.col("year") == year_select4)# filtro per anno selezionato
     .group_by("country")
     .agg(
-        (pl.col("life_exp").mean()).alias("average_life_exp")  # media di ogni paese rispetto all'anno scelto
+        (pl.col("life_exp").mean()).alias("average_life_exp")  # media asp. di vita di ogni paese rispetto all'anno scelto
     )
 )
 
@@ -369,16 +371,17 @@ countries_list = countries["country"].to_list()  # colonna "country" in lista, p
 st.markdown(f"""
             #### Cambiamento dell'Aspettativa di Vita per Paese
 """)
+# scelta utente del paese
 countrie_select = st.selectbox("Scegli un paese", countries_list, index = countries_list.index("IT"), key = "selectbox_0")
 
 data = (
     df_tot
-    .filter(pl.col("country") == (countrie_select))
-    .filter(pl.col("sex") != "T")
-    .filter(pl.col("year") != 2023)# pochi dati, errori di visualizzazione
+    .filter(pl.col("country") == (countrie_select))# filtro per paese scelto
+    .filter(pl.col("sex") != "T")# consideriamo solo maschi e femmine
+    .filter(pl.col("year") != 2023)# pochi datinel 2023, errori di visualizzazione, quindi tolti
     .with_columns(
         pl.col("life_exp")
-        .qcut(100) # percentili
+        .qcut(100) # percentili, per una visualizzazione migliore
         .rank(method = "dense")
         .alias("Percentile")
     )
