@@ -7,7 +7,7 @@ import pandas as pd
 from data import life
 from data import work
 
-# dataset totale
+# dataset totale aspettativa di vita
 df_tot = life(url = "estat_demo_mlexpec.tsv.gz")
 # dataset con sola fascia <=1 anno
 df = df_tot.filter(pl.col("age") == 1)
@@ -26,7 +26,7 @@ st.markdown(f"""**OBIETTIVO**: Analizzare l'aspettativa di vita per studiare un 
             di povertà dei lavoratori.
 """)
 
-#### GRAFICO A BARRE
+#### GRAFICO A BARRE --- modifica numeri con colonna aggiuntiva più alta
 st.markdown(f"""
             #### Aspettativa di Vita medio per Paese ed Anno
 """)
@@ -38,9 +38,6 @@ bar_chart_data = (
     .group_by("country")
     .agg(
         pl.col("life_exp").mean().round(1).alias("average")# media asp. di vita per paese
-    )
-    .with_columns(
-    pl.col("country")
     )
 )
 
@@ -56,52 +53,55 @@ base = (alt.Chart(bar_chart_data)
         )
 )
 st.altair_chart(
-    base.mark_bar(color="skyblue") + base.mark_text(align = "center", dx = 0), use_container_width = False)
+    base.mark_bar(color="skyblue") + 
+    base.mark_text(align="center", dx=0, dy=-10),
+    use_container_width=False
+)
 
 st.markdown(f'''
-            Il grafico a barre cevidenzia l'**aspettativa di vita media** nei vari paesi europei nell'anno scelto tramite lo slider.
+            Il grafico a barre evidenzia l'**aspettativa di vita media** nei vari paesi europei nell'anno scelto tramite lo slider.
             Sull'asse X si trovano i nomi dei paesi, rappresentati da una barra, mentre sull'asse Y è riportata
             l'aspettativa di vita media. Questo tipo di visualizzazione permette di osservare differenze
             significative tra i paesi.
 ''')
 
-### CONFRONTO SESSI
+### CONFRONTO SESSI --- altair altro grafico
 st.markdown(f"""
-            #### Confronto dell'Aspettativa di Vita per Sesso ed Anno
+            #### Confronto dell'Aspettativa di Vita Medio per Sesso ed Anno per i Paesi selezionati
 """)
 year_select1 = st.select_slider("Scegli un anno", years, key = "slider_1", value = 2003)# scelta anno da utente
+selected_countries = st.multiselect("Scegli uno o più paesi", countries, default = ["IT", "BE", "CH"], key = "multiselec0")
 
 sex_data = (
     df_eu
     .filter(pl.col("year") == year_select1)# filtro per anno scelto
     .filter(pl.col("sex").is_in(["M", "F"]))# teniamo solo sesso maschio e femmina
+    .filter(pl.col("country").is_in(selected_countries))
     .group_by("country", "sex")
     .agg(
         pl.col("life_exp").mean().alias("average_life_exp")# media asp. di vita per sesso e paese
     )
 )
 
-sex_chart = (
-    alt.Chart(sex_data)
-    .mark_bar()
-    .encode(
-        alt.X("average_life_exp:Q", title = "Aspettativa di vita media"),
-        alt.Y("country:N", sort = "-x", title = "Paesi"),
-        alt.Color("sex:N", title = "Sesso"),
-        tooltip = ["country", "sex", "average_life_exp"]
-    )
-    .properties(
-        width = 600,
-        height = alt.Step(20)
-    )
+chartt = alt.Chart(sex_data).mark_bar().encode(
+    x=alt.X("average_life_exp:Q", title="Aspettativa di vita media"),
+    y=alt.Y("sex:N", title="Sesso"),
+    color=alt.Color("sex:N", title="Sesso"),
+    row=alt.Row("country:N", title="Paesi", spacing=10)
+).properties(
+    width=600,
+    height=30  # Altezza della barra per ogni paese
+).configure_view(
+    continuousHeight=400  # Altezza visibile del grafico
 )
-st.altair_chart(sex_chart, use_container_width = True)
+
+st.altair_chart(chartt, use_container_width=True)
 
 st.markdown('''
             Il grafico a barre confronta l'**aspettativa di vita media** tra femmine e maschi
-            nei diversi paesi, per l'anno selezionato.
-            L'asse X mostra l'aspettativa di vita media mentre l'asse Y riporta i paesi e ogni barra è suddivisa
-            e colorata in base al sesso. Questo tipo di visualizzazione consente di osservare
+            nei diversi paesi scelti e per l'anno selezionato.
+            L'asse X mostra l'aspettativa di vita media mentre l'asse Y riporta i paesi, ognuno dei quali ha 2 barre,
+            una per sesso, colorata come da legenda. Questo tipo di visualizzazione consente di osservare
             rapidamente le **disparità**, se esistenti, tra i due sessi in termini di aspettativa di vita
             e di confrontarle tra i vari stati europei.
 
@@ -142,7 +142,8 @@ fig = px.choropleth(
     color_continuous_scale = px.colors.sequential.Viridis_r,
     scope = "europe",
     width = 800,
-    height = 600
+    height = 600,
+    projection="azimuthal equal area"
 )
 st.plotly_chart(fig)
 
@@ -200,7 +201,8 @@ fig1 = px.choropleth(
     color_continuous_scale = px.colors.sequential.Viridis_r,
     scope = "europe",
     width = 800,
-    height = 600
+    height = 600,
+    projection="azimuthal equal area"
 )
 st.plotly_chart(fig1)
 
@@ -215,9 +217,9 @@ st.markdown(f'''
             i due sessi.
 ''')
 
-### TREND DI CRESCITA GLOBALE
+### TREND DI CRESCITA TOTALE
 st.markdown(f"""
-            #### Trend Globale dell'Aspettativa di Vita
+            #### Trend Totale dell'Aspettativa di Vita
 """)
 global_trend_data = (
     df
@@ -264,7 +266,7 @@ st.markdown(f"""
             #### Tred dell'Aspettativa di Vita per Paese e Sesso
 """)
 # multi select per paesi 
-selected_countries = st.multiselect("Scegli uno o più paesi", countries, default = ["IT", "BE", "CH"]) #ita, germ, svizz
+selected_countries = st.multiselect("Scegli uno o più paesi", countries, default = ["IT", "BE", "CH"], key = "multiselec1") #ita, germ, svizz
 filtered_df = (
     df
     .filter(pl.col("country").is_in(selected_countries))# filtro oss per paesi scelti
@@ -535,7 +537,7 @@ st.markdown(f"""
             La visualizzazione consente di individuare eventuali correlazioni o divergenze tra i due trend,
             mostrando come l'andamento socioeconomico potrebbe influenzare la salute pubblica.
 
-            Il grafico evidenzia che, per molti paesi europei, emerge una relazione positiva più o meno stretta tra
+            Il grafico evidenzia che, per alcuni paesi europei, emerge una leggera relazione positiva più o meno stretta tra
             aspettativa di vita media e tasso di lavoratori a rischio povertà medio. E' però importante ricordare che 
             **correlazione non implica causalità** e che ci potrebbero essere altri fattori non osservati, come accesso
             ai servizi sanitari, educazione e politiche pubbliche, che possono influenzare il risultato.
@@ -547,24 +549,25 @@ st.markdown(f"""
 """)
 
 ### CONCLUSIONI
-if st.button("Leggi le conclusioni del progetto"):
-    st.markdown(f"""
-                Le principali conclusioni, che sono messe in evidenza dall'analisi dei dati
-                sull'aspettativa di vita e il tasso di lavoratori a rischio povertà nei paesi europei, sono:
 
-                - L'aspettativa di vita sembra sia cresciuta costantemente dal 1960,
-                grazie a migliori condizioni sanitarie e socioeconomiche. Si riscontrano però anche periodi
-                di cali temporanei, che si possono attribuire a fattori quali guerre o pandemie (es. covid 2020/2021).
-                - Le donne mostrano una maggiore aspettativa di vita rispetto uomini in tutti i paesi analizzati,
-                ma il divario tra i sessi varia significativamente da paese a paese.
-                - E' emersa una correlazione positiva più o meno evidente tra il tasso di povertà dei lavoratori e l'aspettativa di vita,
-                per alcuni paesi europei, mentre per altri incorrelazione o una lieve correlazione negativa,
-                questo può indicare che ci sono altri fattori non osservati che giocano un ruolo importante.
-                E siccome correlazione non implica causalità, potrebbe essere un caso di correlazione spuria tra le
-                due variabili osservate.
+st.markdown(f"""
+            ## CONCLUSIONI
+            Le principali conclusioni, che sono messe in evidenza dall'analisi dei dati
+            sull'aspettativa di vita e il tasso di lavoratori a rischio povertà nei paesi europei, sono:
 
-                Questi risultati offrono una panoramica utile per comprendere l'evoluzione della salute pubblica in Europa,
-                fornendo spunti per ulteriori analisi.
+            - L'aspettativa di vita sembra sia cresciuta costantemente dal 1960,
+            grazie a migliori condizioni sanitarie e socioeconomiche. Si riscontrano però anche periodi
+            di cali temporanei, che si possono attribuire a fattori quali guerre o pandemie (es. covid 2020/2021).
+            - Le donne mostrano una maggiore aspettativa di vita rispetto uomini in tutti i paesi analizzati,
+            ma il divario tra i sessi varia significativamente da paese a paese.
+            - E' emersa una correlazione positiva più o meno evidente tra il tasso di povertà dei lavoratori e l'aspettativa di vita,
+            per alcuni paesi europei, mentre per altri incorrelazione o una lieve correlazione negativa,
+            questo può indicare che ci sono altri fattori non osservati che giocano un ruolo importante.
+            E siccome correlazione non implica causalità, potrebbe essere un caso di correlazione spuria tra le
+            due variabili osservate.
+
+            Questi risultati offrono una panoramica utile per comprendere l'evoluzione della salute pubblica in Europa,
+            fornendo spunti per ulteriori analisi.
 """)
 
 st.markdown(f"""

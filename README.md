@@ -21,6 +21,14 @@ Analizzare l'aspettativa di vita per studiare un indice della salute generale pe
 
 **Fonte**: https://ec.europa.eu/eurostat/databrowser/view/ilc_iw01/default/table?lang=en&category=livcon.ilc.ilc_ip.ilc_iw
 
+# PREPROCESSING
+I due dataset, entrambi provenienti da eurostat, avevano una struttura iniziale simile in formato non tidy.
+In particolare avevano una colonna singola che aggregava tutte le variabili, quindi è stata divisa in più colonne
+per la singola variabile.
+Inoltre gli anni erano considerati come variabili, quindi una colonna per ogni anno che conteneva la rispettiva
+osservazione di aspettativa di vita, tramite un unpivot è stato allora creata la variabile "year" con modalità gli anni
+e la variabile "life_exp" dalle modalità che assumevano le varie colonne degli anni.
+
 # OSSERVAZIONI
 1) Le prove sono state eseguite con il tema chiaro
 
@@ -31,6 +39,12 @@ Analizzare l'aspettativa di vita per studiare un indice della salute generale pe
 3) La visualizzazione grafica della cartina d'Europa l'ho fatta utilizzando Plotly prima della lezione del 11/12/24 che spiegava come
    implementarla con altair/geopandas. Ho deciso di tenerla in questo formato dato che il risultato finale mi sembra buono e sopratutto funzionante, considerando anche il tempo che ci avevo già dedicato.
    Inoltre ho scelto una cartina limitata alla sola Europa dato che il dataset contiene esclusivamente osservazioni relative ai paesi europei.
+   Come proiezione è stata utilizzata la "azimuthal equal area", per preservare le aree.
+
+4) Per l'analisi della correlazione è stato fatto inizialmente uno scatterplot, con l'utente che poteva scegliere l'anno
+   e ogni punto rappresentava un paese. Il grafico è stato scartato data la bassa o nulla correlazione che dava vita a
+   soli grafici con nuvole di punti sparpagliati e quindi poco informativi.
+   E' stato scelto l'altro grafico per avere inoltre a disposizione l'andamento nel tempo delle due variabili.
 
 # CONCLUSIONI
 
@@ -42,8 +56,8 @@ sull'aspettativa di vita e il tasso di lavoratori a rischio povertà nei paesi e
   di cali temporanei, che si possono attribuire a fattori quali guerre o pandemie (es. covid 2020/2021).
 - Le donne mostrano una maggiore aspettativa di vita rispetto uomini in tutti i paesi analizzati,
   ma il divario tra i sessi varia significativamente da paese a paese.
-- E' emersa una correlazione positiva più o meno evidente tra il tasso di povertà dei lavoratori e l'aspettativa di vita,
-  per alcuni paesi europei, mentre per altri incorrelazione o una lieve correlazione negativa,
+- Per alcuni paesi europei è emersa una correlazione positiva più o meno evidente tra il tasso di povertà dei lavoratori e 
+  l'aspettativa di vita, mentre per altri incorrelazione o una lieve correlazione negativa,
   questo può indicare che ci sono altri fattori non osservati che giocano un ruolo importante.
   E siccome correlazione non implica causalità, potrebbe essere un caso di correlazione spuria tra le due variabili osservate.
 
