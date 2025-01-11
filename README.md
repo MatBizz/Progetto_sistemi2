@@ -34,7 +34,7 @@ e la variabile "life_exp" dalle modalità che assumevano le varie colonne degli 
 
 2) Le analisi sono state effettuate con la sola fascia d'età <=1 anno, tranne se specificato diversamente in singole analisi,
    per diversi motivi, i principali sono una maggiore chiarezza dei risultati e perché rappresenta un indicatore della salute
-   generale della popolazione, strettamente legato alla mortalità infantile e al contesto socioeconomico.
+   generale della popolazione, strettamente legato alla mortalità infantile, all'igiene, alla sanità pubblica e al contesto socioeconomico.
 
 3) La visualizzazione grafica della cartina d'Europa l'ho fatta utilizzando Plotly prima della lezione del 11/12/24 che spiegava come
    implementarla con altair/geopandas. Ho deciso di tenerla in questo formato dato che il risultato finale mi sembra buono e sopratutto funzionante, considerando anche il tempo che ci avevo già dedicato.

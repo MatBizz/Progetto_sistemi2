@@ -19,11 +19,20 @@ countries = df.select("country").unique().sort("country") # paesi
 years = df.select("year").unique().sort("year") # anni
 sex = df.select("sex").unique().sort("sex") # sesso
 
-st.write("## Analisi dell'Aspettativa di Vita nei Paesi Europei: Focus sulla fascia d'età infantile")
+st.markdown("### Analisi dell'Aspettativa di Vita nei Paesi Europei")
+
+st.write(f"""#### INDRODUZIONE""")
+            
 st.markdown(f"""**OBIETTIVO**: Analizzare l'aspettativa di vita per studiare un indice della
             salute generale per i diversi paesi europei e fare un confronto tra sesso, anno e paese.
             Alla fine si studia se esiste una correlazione tra l'aspettativa di vita e il tasso
             di povertà dei lavoratori.
+""")
+
+st.markdown(f"""**OSSERVAZIONI**: Le analisi sono state effettuate con la sola fascia d'età <=1 anno, tranne se
+            specificato diversamente in singole analisi, per diversi motivi, i principali sono una maggiore
+            chiarezza dei risultati e perché rappresenta un indicatore della salute generale della popolazione,
+            strettamente legato alla mortalità infantile, all'igiene, alla sanità pubblica e al contesto socioeconomico.
 """)
 
 #### GRAFICO A BARRE --- modifica numeri con colonna aggiuntiva più alta
@@ -53,8 +62,8 @@ base = (alt.Chart(bar_chart_data)
         )
 )
 st.altair_chart(
-    base.mark_bar(color="skyblue") + 
-    base.mark_text(align="center", dx=0, dy=-10),
+    base.mark_bar() + 
+    base.mark_text(align="center", dy=-10, dx=0),
     use_container_width=False
 )
 
@@ -103,7 +112,7 @@ st.markdown('''
             L'asse X mostra l'aspettativa di vita media mentre l'asse Y riporta i paesi, ognuno dei quali ha 2 barre,
             una per sesso, colorata come da legenda. Questo tipo di visualizzazione consente di osservare
             rapidamente le **disparità**, se esistenti, tra i due sessi in termini di aspettativa di vita
-            e di confrontarle tra i vari stati europei.
+            e di confrontarle tra i vari paesi europei.
 
 ''')
 
@@ -247,10 +256,10 @@ global_trend_chart = (
 st.altair_chart(global_trend_chart, use_container_width = True)
 
 st.markdown('''
-            Questo grafico mostra l'andamento dell'**aspettativa di vita media globale** nel corso degli anni. 
-            E' stata considerata la media dell'aspettativa di vita a livello globale, considerando tutti i sessi, 
+            Questo grafico mostra l'andamento dell'**aspettativa di vita media totale** nel corso degli anni. 
+            E' stata considerata la media dell'aspettativa di vita a livello europeo, considerando tutti i sessi, 
             con i punti che evidenziano i dati specifici di ogni anno.
-            L'asse X rappresenta gli anni e l'asse Y l'aspettativa di vita media globale. La linea mostra l'andamento
+            L'asse X rappresenta gli anni e l'asse Y l'aspettativa di vita media. La linea mostra l'andamento
             nel tempo e i punti sono le osservazioni.
 
             Il grafico offre una visione chiara e immediata di come l'aspettativa di vita sia cambiata nel tempo,
@@ -299,19 +308,19 @@ with col1:
     st.altair_chart(chart, use_container_width = True)
 
 st.markdown(f'''
-            Questo grafico mostra l'**evoluzione dell'aspettativa di vita media nel tempo*, distinguendo maschi
+            Questo grafico mostra l'**evoluzione dell'aspettativa di vita media nel tempo**, distinguendo maschi
             e femmine, per i paesi selezionati.
             L'asse X mostra gli anni, mentre l'asse Y riporta l'aspettativa di vita media.
             Il grafico a destra mostra le osservazioni delle femmine, mentre quello a sinistra dei maschi,
             inoltre la linea che mostra l'andamento nel tempo è colorata in base ai paesi, seguendo la leggenda a lato.
             
-            Dai dati risulta ci sia generalmente un miglioramento nel tempo, e le donne tendono ad avere un valore
-            più alto rispetto agli uomini.
+            Dai dati, in generale, risulta ci sia un trend evolutivo positivo, e le donne tendono ad avere un'aspettativa
+            di vita mediamente più alto rispetto agli uomini.
             ''')
 
 # DEVIAZIONE DALLA MEDIA GLOBALE
 st.markdown(f"""
-            #### Anomalie principali rispetto alla media globale per Anno
+            #### Anomalie principali rispetto alla media europea per Anno
 """)
 year_select4 = st.select_slider("Scegli un anno", years, key = "slider_4", value = 2003)# scelta anno da utenmte
 
@@ -346,7 +355,7 @@ deviation_chart = (
     alt.Chart(top_countries)
     .mark_bar()
     .encode(
-        alt.X("deviation_from_mean:Q", title = "Deviazione dalla media"),
+        alt.X("deviation_from_mean:Q", title = "Deviazione dalla media europea"),
         alt.Y("country:N", sort = "-x", title = "Paesi"),
         tooltip = ["country", "deviation_from_mean"]
     )
@@ -358,13 +367,13 @@ deviation_chart = (
 st.altair_chart(deviation_chart, use_container_width = True)
 st.markdown(f"""
             Questo grafico ci permette di visualizzare i 10 paesi che presentano le maggiori **deviazioni**
-            dall'aspettativa di vita media globale per l'anno selezionato. In particolare mostra i 5 paesi 
-            con la più alta deviazione positiva, cioè con una aspettativa di vita superiore alla media globale,
-            e i 5 paesi con la maggiore deviazione negativa, quindi con un'aspettativa di vita inferiore alla media globale.
+            dall'aspettativa di vita media europea per l'anno selezionato. In particolare mostra i 5 paesi 
+            con la più alta deviazione positiva, cioè con una aspettativa di vita superiore alla media europea,
+            e i 5 paesi con la maggiore deviazione negativa, quindi con un'aspettativa di vita inferiore alla media europea.
              L'asse X mostra la deviazione dalla media, mentre l'asse Y riporta i paesi.
 
-            Permette di avere un'idea generale di quali paesi sono i migliori e quali i peggiori rispetto alla
-            media globale, rispetto all'anno selezionato.
+            Permette di avere un'idea generale di quali paesi siano messi meglio e quali peggio, a livello europeo, 
+            sull'aspettativa di vita e quindi sulle condizioni di salute generali del paese, rispetto all'anno selezionato.
 """)
 
 ### ANALISI CON TUTTE LE ETA'
@@ -551,7 +560,7 @@ st.markdown(f"""
 ### CONCLUSIONI
 
 st.markdown(f"""
-            ## CONCLUSIONI
+            ### CONCLUSIONI
             Le principali conclusioni, che sono messe in evidenza dall'analisi dei dati
             sull'aspettativa di vita e il tasso di lavoratori a rischio povertà nei paesi europei, sono:
 
@@ -571,6 +580,7 @@ st.markdown(f"""
 """)
 
 st.markdown(f"""
+            ### FONTI
     Dataset: 'Life expectancy by age and sex'  
     Fonte: [Eurostat :chart:](https://ec.europa.eu/eurostat/databrowser/view/demo_mlexpec/default/table?lang=en&category=demo.demo_mor)
             
