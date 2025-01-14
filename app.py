@@ -19,22 +19,39 @@ countries = df.select("country").unique().sort("country") # paesi
 years = df.select("year").unique().sort("year") # anni
 sex = df.select("sex").unique().sort("sex") # sesso
 
-st.markdown("### Analisi dell'Aspettativa di Vita nei Paesi Europei")
+### INDICE
+
+st.sidebar.title('Indice')
+st.sidebar.markdown('''
+- **Introduzione**
+- **Analisi**
+    - Aspettativa di vita media: analisi totale e divisa per sesso
+    - Mappe: aspettative di vita media e gap tra sessi in Europa
+    - Trend dell'aspettativa di vita: analisi totale e dettagliata per sesso e paese
+    - Anomalie principali
+    - Cambiamento nel tempo dell'aspettativa di vita per tutte le età
+    - Correlazione tra aspettativa di vita e tasso di povertà
+- **Conclusioni**
+- **Fonti**
+''')
+
+st.markdown("## Analisi dell'Aspettativa di Vita nei Paesi Europei")
 
 st.write(f"""#### INDRODUZIONE""")
-            
+
 st.markdown(f"""**OBIETTIVO**: Analizzare l'aspettativa di vita per studiare un indice della
             salute generale per i diversi paesi europei e fare un confronto tra sesso, anno e paese.
             Alla fine si studia se esiste una correlazione tra l'aspettativa di vita e il tasso
             di povertà dei lavoratori.
 """)
 
-st.markdown(f"""**OSSERVAZIONI**: Le analisi sono state effettuate con la sola fascia d'età <=1 anno, tranne se
-            specificato diversamente in singole analisi, per diversi motivi, i principali sono una maggiore
+st.markdown(f"""**OSSERVAZIONI**: Le analisi sono state effettuate con la sola fascia d'età <=1 anno, tranne se specificato
+            diversamente in singole analisi, per diversi motivi, i principali sono una maggiore
             chiarezza dei risultati e perché rappresenta un indicatore della salute generale della popolazione,
             strettamente legato alla mortalità infantile, all'igiene, alla sanità pubblica e al contesto socioeconomico.
 """)
 
+st.write(f"""#### ANALISI""")
 #### GRAFICO A BARRE --- modifica numeri con colonna aggiuntiva più alta
 st.markdown(f"""
             #### Aspettativa di Vita medio per Paese ed Anno
@@ -57,7 +74,7 @@ base = (alt.Chart(bar_chart_data)
                 text = "average",
         )
         .properties(
-            width = alt.Step(22),
+            width = alt.Step(21),
             height = 400
         )
 )
@@ -99,12 +116,12 @@ chartt = alt.Chart(sex_data).mark_bar().encode(
     row=alt.Row("country:N", title="Paesi", spacing=10)
 ).properties(
     width=600,
-    height=30  # Altezza della barra per ogni paese
+    height=30  
 ).configure_view(
-    continuousHeight=400  # Altezza visibile del grafico
+    continuousHeight=400 
 )
 
-st.altair_chart(chartt, use_container_width=True)
+st.altair_chart(chartt, use_container_width=False)
 
 st.markdown('''
             Il grafico a barre confronta l'**aspettativa di vita media** tra femmine e maschi
@@ -305,7 +322,7 @@ with col1:
         )
     )
 
-    st.altair_chart(chart, use_container_width = True)
+    st.altair_chart(chart, use_container_width = False)
 
 st.markdown(f'''
             Questo grafico mostra l'**evoluzione dell'aspettativa di vita media nel tempo**, distinguendo maschi
@@ -408,10 +425,11 @@ chart = (
         alt.Facet("sex:N")
     )
     .properties(
-        height= 250
+        height= 250,
+        width = 650
         )
 )
-st.altair_chart(chart, use_container_width=True)
+st.altair_chart(chart, use_container_width=False)
 
 st.markdown(f"""
             Questo grafico analizza come l'aspettativa di vita media varia tra diverse fasce di età e come cambia nel tempo,
