@@ -1,5 +1,6 @@
 # RUN
 uv run streamlit run app.py
+
 Alcune volte su windows bisogna usare: uv run -n streamlit run app.py
 
 # OBIETTIVO
@@ -21,23 +22,6 @@ Analizzare l'aspettativa di vita per studiare un indice della salute generale pe
    e ogni punto rappresentava un paese. Il grafico è stato scartato data la bassa o nulla correlazione che dava vita a
    soli grafici con nuvole di punti sparpagliati e quindi poco informativi.
    E' stato scelto l'altro grafico per avere inoltre a disposizione l'andamento nel tempo delle due variabili.
-
-# FONTI
-**Dataset**: 'Life expectancy by age and sex'
-
-**Descrizione**: Questo dataset proviene da eurostat.
-             Misura l'aspettativa di vita, suddivisa per anno, paese (esclusivamente del continente europeo), sesso ed età.
-             Il periodo coperto è dal 1960 al 2023.
-
-**Fonte**: https://ec.europa.eu/eurostat/databrowser/view/demo_mlexpec/default/table?lang=en&category=demo.demo_mor
-            
-**Dataset**: 'In-work at-risk-of-poverty rate by age and sex'
-
-**Descrizione**: Questo dataset proviene da eurostat.
-             Misura il tasso dei lavoratori a rischio di povertà, suddivisa per anno, paese (esclusivamente del continente europeo), sesso ed età (fascie di età).
-             Il periodo coperto è dal 2003 al 2023.
-
-**Fonte**: https://ec.europa.eu/eurostat/databrowser/view/ilc_iw01/default/table?lang=en&category=livcon.ilc.ilc_ip.ilc_iw
 
 # PREPROCESSING
 I due dataset utilizzati, entrambi provenienti da Eurostat, presentavano una struttura iniziale simile, non conforme al formato tidy.
@@ -64,3 +48,20 @@ sull'aspettativa di vita e il tasso di lavoratori a rischio povertà nei paesi e
 
 Questi risultati offrono una panoramica utile per comprendere l'evoluzione della salute pubblica in Europa,
 fornendo spunti per ulteriori analisi.
+
+# FONTI
+**Dataset**: 'Life expectancy by age and sex'
+
+**Descrizione**: Questo dataset proviene da eurostat.
+             Misura l'aspettativa di vita, suddivisa per anno, paese (esclusivamente del continente europeo), sesso ed età.
+             Il periodo coperto è dal 1960 al 2023.
+
+**Fonte**: https://ec.europa.eu/eurostat/databrowser/view/demo_mlexpec/default/table?lang=en&category=demo.demo_mor
+            
+**Dataset**: 'In-work at-risk-of-poverty rate by age and sex'
+
+**Descrizione**: Questo dataset proviene da eurostat.
+             Misura il tasso dei lavoratori a rischio di povertà, suddivisa per anno, paese (esclusivamente del continente europeo), sesso ed età (fascie di età).
+             Il periodo coperto è dal 2003 al 2023.
+
+**Fonte**: https://ec.europa.eu/eurostat/databrowser/view/ilc_iw01/default/table?lang=en&category=livcon.ilc.ilc_ip.ilc_iw
