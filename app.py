@@ -22,22 +22,28 @@ sex = df.select("sex").unique().sort("sex") # sesso
 ### INDICE
 
 st.sidebar.title('Indice')
+st.sidebar.divider()
 st.sidebar.markdown('''
 - **Introduzione**
-- **Analisi**
-    - Aspettativa di vita media: analisi totale e divisa per sesso
-    - Mappe: aspettative di vita media e gap tra sessi in Europa
-    - Trend dell'aspettativa di vita: analisi totale e dettagliata per sesso e paese
-    - Anomalie principali
-    - Cambiamento nel tempo dell'aspettativa di vita per tutte le età
-    - Correlazione tra aspettativa di vita e tasso di povertà
+- **Analisi sull'aspettativa di vita media**
+    - Confronto tra Paesi per Anno
+    - Confronto tra Sessi per Paese ed Anno
+- **Analisi grafiche sulla cartina d'Europa**
+    - Aspettativa di Vita media per Anno
+    - Gap tra Sessi per Anno
+- **Trend sull'aspettativa di vita media**
+    - Analisi Totale 
+    - Dettagliata per Sesso e Paese
+- **Anomalie principali**
+- **Andamento dell'aspettativa di vita per tutte le Età**
+- **Correlazione tra aspettativa di vita e tasso di povertà**
 - **Conclusioni**
 - **Fonti**
 ''')
 
 st.markdown("## Analisi dell'Aspettativa di Vita nei Paesi Europei")
 
-st.write(f"""#### INDRODUZIONE""")
+st.write(f"""### INDRODUZIONE""")
 
 st.markdown(f"""**OBIETTIVO**: Analizzare l'aspettativa di vita per studiare un indice della
             salute generale per i diversi paesi europei e fare un confronto tra sesso, anno e paese.
@@ -46,15 +52,16 @@ st.markdown(f"""**OBIETTIVO**: Analizzare l'aspettativa di vita per studiare un 
 """)
 
 st.markdown(f"""**OSSERVAZIONI**: Le analisi sono state effettuate con la sola fascia d'età <=1 anno, tranne se specificato
-            diversamente in singole analisi, per diversi motivi, i principali sono una maggiore
+            diversamente in singole analisi, per diversi motivi. I principali sono una maggiore
             chiarezza dei risultati e perché rappresenta un indicatore della salute generale della popolazione,
             strettamente legato alla mortalità infantile, all'igiene, alla sanità pubblica e al contesto socioeconomico.
 """)
+st.divider()
+st.write(f"""#### Analisi sull'aspettativa di vita media""")
 
-st.write(f"""#### ANALISI""")
 #### GRAFICO A BARRE --- modifica numeri con colonna aggiuntiva più alta
 st.markdown(f"""
-            #### Aspettativa di Vita medio per Paese ed Anno
+            ##### Confronto tra Paesi per Anno
 """)
 year_select0 = st.select_slider("Scegli un anno", years, key = "slider_0", value = 2003)# scelta anno da utente
 
@@ -93,7 +100,7 @@ st.markdown(f'''
 
 ### CONFRONTO SESSI --- altair altro grafico
 st.markdown(f"""
-            #### Confronto dell'Aspettativa di Vita Medio per Sesso ed Anno per i Paesi selezionati
+            ##### Confronto tra Sessi per Paese ed Anno
 """)
 year_select1 = st.select_slider("Scegli un anno", years, key = "slider_1", value = 2003)# scelta anno da utente
 selected_countries = st.multiselect("Scegli uno o più paesi", countries, default = ["IT", "BE", "CH"], key = "multiselec0")
@@ -134,6 +141,8 @@ st.markdown('''
 ''')
 
 ### CARTINA GEOGRAFICA
+st.divider()
+st.write(f"""#### Analisi grafiche sulla cartina d'Europa""")
 # necessario passare a pandas per applicare il metodo .map()
 # conversione in pandas
 df_pandas = df_eu.to_pandas()
@@ -145,7 +154,7 @@ df_pandas["country_iso3"] = df_pandas["country"].map(iso2_to_iso3)
 df_iso3 = pl.from_pandas(df_pandas)
 
 st.markdown(f"""
-            #### Aspettativa di Vita media per Paese ed Anno
+            ##### Aspettativa di Vita media per Anno
 """)
 year_select2 = st.select_slider("Scegli un anno", years, key = "slider_2", value = 2003)# scelta anno da utente
 
@@ -186,7 +195,7 @@ st.markdown(f'''
 
 ### CARTINA GEOGRAFICA GAP SESSI
 st.markdown(f"""
-            #### Gap dell'Aspettativa di Vita media per Paese ed anno
+            ##### Gap tra Sessi per Anno
 """)
 year_select3 = st.select_slider("Scegli un anno", years, key = "slider_3", value = 2003)# scelta anno da utente
 
@@ -243,9 +252,11 @@ st.markdown(f'''
             i due sessi.
 ''')
 
+st.divider()
+st.write(f"""#### Trend sull'aspettativa di vita media""")
 ### TREND DI CRESCITA TOTALE
 st.markdown(f"""
-            #### Trend Totale dell'Aspettativa di Vita
+            ##### Analisi Totale
 """)
 global_trend_data = (
     df
@@ -289,7 +300,7 @@ st.markdown('''
 ### TREND PER PAESE ED ANNO
 
 st.markdown(f"""
-            #### Tred dell'Aspettativa di Vita per Paese e Sesso
+            ##### Dettagliata per Sesso e Paese
 """)
 # multi select per paesi 
 selected_countries = st.multiselect("Scegli uno o più paesi", countries, default = ["IT", "BE", "CH"], key = "multiselec1") #ita, germ, svizz
@@ -336,6 +347,7 @@ st.markdown(f'''
             ''')
 
 # DEVIAZIONE DALLA MEDIA GLOBALE
+st.divider()
 st.markdown(f"""
             #### Anomalie principali rispetto alla media europea per Anno
 """)
@@ -394,10 +406,10 @@ st.markdown(f"""
 """)
 
 ### ANALISI CON TUTTE LE ETA'
-
+st.divider()
 countries_list = countries["country"].to_list()  # colonna "country" in lista, per usarla come indice
 st.markdown(f"""
-            #### Cambiamento dell'Aspettativa di Vita per Paese
+            #### Andamento dell'aspettativa di vita per tutte le Età per Paese
 """)
 # scelta utente del paese
 countrie_select = st.selectbox("Scegli un paese", countries_list, index = countries_list.index("IT"), key = "selectbox_0")
@@ -445,6 +457,7 @@ st.markdown(f"""
             """)
 
 ### INNER JOIN
+st.divider()
 # carico dataset tasso dei lavoratori a rischio di povertà
 df_work = work(url = "estat_ilc_iw01.tsv.gz")
 # aggrego la media dell'aspettativa di vita per paese e anno, con dataset con solo eta <= 1
@@ -576,7 +589,7 @@ st.markdown(f"""
 """)
 
 ### CONCLUSIONI
-
+st.divider()
 st.markdown(f"""
             ### CONCLUSIONI
             Le principali conclusioni, che sono messe in evidenza dall'analisi dei dati
@@ -596,12 +609,20 @@ st.markdown(f"""
             Questi risultati offrono una panoramica utile per comprendere l'evoluzione della salute pubblica in Europa,
             fornendo spunti per ulteriori analisi.
 """)
-
+st.divider()
 st.markdown(f"""
             ### FONTI
-    Dataset: 'Life expectancy by age and sex'  
-    Fonte: [Eurostat :chart:](https://ec.europa.eu/eurostat/databrowser/view/demo_mlexpec/default/table?lang=en&category=demo.demo_mor)
+    **Dataset**: 'Life expectancy by age and sex'
             
-    Dataset: 'In-work at-risk-of-poverty rate by age and sex'  
-    Fonte: [Eurostat :chart:](https://ec.europa.eu/eurostat/databrowser/view/ilc_iw01/default/table?lang=en&category=livcon.ilc.ilc_ip.ilc_iw)
+    **Descrizione**: Misura l'aspettativa di vita, suddivisa per anno, paese (esclusivamente del continente europeo), sesso ed età.
+                 Il periodo coperto è dal 1960 al 2023.
+            
+    **Fonte**: [Eurostat :chart:](https://ec.europa.eu/eurostat/databrowser/view/demo_mlexpec/default/table?lang=en&category=demo.demo_mor)
+            
+    **Dataset**: 'In-work at-risk-of-poverty rate by age and sex'
+            
+    **Descrizione**: Misura il tasso dei lavoratori a rischio di povertà, suddivisa per anno, paese (esclusivamente del continente europeo), sesso ed età (fascie di età).
+                 Il periodo coperto è dal 2003 al 2023. 
+            
+    **Fonte**: [Eurostat :chart:](https://ec.europa.eu/eurostat/databrowser/view/ilc_iw01/default/table?lang=en&category=livcon.ilc.ilc_ip.ilc_iw)
 """)

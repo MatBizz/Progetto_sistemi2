@@ -1,7 +1,7 @@
 # RUN
 uv run streamlit run app.py
 
-Alcune volte su windows bisogna usare: uv run -n streamlit run app.py
+Alcune volte, su windows, bisogna usare: uv run -n streamlit run app.py
 
 # OBIETTIVO
 Analizzare l'aspettativa di vita per studiare un indice della salute generale per i diversi paesi europei e fare un confronto tra sesso, anno e paese. Alla fine si studia se esiste una correlazione tra l'aspettativa di vita e il tasso di povertà dei lavoratori.
@@ -10,7 +10,7 @@ Analizzare l'aspettativa di vita per studiare un indice della salute generale pe
 1) Le prove sono state eseguite con il tema chiaro
 
 2) Le analisi sono state effettuate con la sola fascia d'età <=1 anno, tranne se specificato diversamente in singole analisi,
-   per diversi motivi, i principali sono una maggiore chiarezza dei risultati e perché rappresenta un indicatore della salute
+   per diversi motivi. I principali sono una maggiore chiarezza dei risultati e perché rappresenta un indicatore della salute
    generale della popolazione, strettamente legato alla mortalità infantile, all'igiene, alla sanità pubblica e al contesto socioeconomico.
 
 3) La visualizzazione grafica della cartina d'Europa l'ho fatta utilizzando Plotly prima della lezione del 11/12/24 che spiegava come
@@ -31,6 +31,8 @@ Nello specifico:
   Tramite un'operazione di unpivot, sono state create la variabile year, contenente gli anni come modalità e la variabile life_exp, derivata dalle osservazioni presenti nelle colonne degli anni.
 
 Lo stesso processo è stato applicato al secondo dataset, con la differenza che è stata creata la variabile poverty_rate per rappresentare le osservazioni originali.
+
+Inoltre per la visualizzazione grafica sono stati sostituiti i codici ISO-2, usati di default da Eurostat, con i rispettivi codici ISO-3 per via della libreria utilizzata. Qeusta procedura è stata fatta solo per il dataset sull'aspettativa di vita.
 
 # CONCLUSIONI
 Le principali conclusioni, che sono messe in evidenza dall'analisi dei dati
